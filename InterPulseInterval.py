@@ -3,7 +3,7 @@ import numpy as np
 import os
 import shutil
 import wfdb
-def IPI(filter, filename, start, step, threshold):
+def iPulInt(filter, filename, start, step, threshold, toPlot = True):
 	"""Función para determinar el IPI de un segmento de tiempo."""
 	record = wfdb.rdrecord(filename)
 	fs = record.__dict__["fs"]
@@ -25,8 +25,9 @@ def IPI(filter, filename, start, step, threshold):
 	peaks_DxDt = np.dot(np.diff(peaks), 1/fs)
 	IPI = np.average(peaks_DxDt[peaks_DxDt > 1/fs])
 	# Gráficas
-	wfdb.plot_wfdb(record=record, title='Record ' + filename[-3:] + ' from MIT-BIH Arrhythmia DB')
+	if toPlot:
+		wfdb.plot_wfdb(record=record, title='Record ' + filename[-3:] + ' from MIT-BIH Arrhythmia DB')
 	return IPI, record
 if __name__ == '__main__':
-	ipi,record = IPI(5, 'physionet2/103', 94, 2.5, 2)
+	ipi,record = iPulInt(5, 'physionet2/103', 94, 2.5, 2, True)
 	print("IPI Value:", ipi)

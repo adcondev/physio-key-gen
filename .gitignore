@@ -1,3 +1,5 @@
 # Archivos signals
 physionet/
 physionet2/
+# gitignore
+.gitignore
