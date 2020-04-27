@@ -1,5 +1,5 @@
 import math
-import mmh3
+import hashlib as hl
 from bitarray import bitarray
 
 class BloomFilter(object):
@@ -21,7 +21,8 @@ class BloomFilter(object):
         self.bit_array = bitarray(self.size)
         # Inicio de bits en 0
         self.bit_array.setall(0)
-
+    def get_bitarray_size(self):
+        return self.size
     def add(self, item):
         '''
         Integrar elemento al filtro
@@ -31,7 +32,10 @@ class BloomFilter(object):
             # crear digesto dado un número.
             # i es la semilla de cada murmur3 hash
             # cada digesto es diferente, dada la semilla
-            digest = mmh3.hash(item,i) % self.size
+            H = hl.sha1()
+            H.update(bytearray(item,'utf-8'))
+            H.update(bytearray(str(i),'utf-8'))
+            digest = int.from_bytes(H.digest(), 'big') % self.size
             digests.append(digest)
             # set the bit True in bit_array
             self.bit_array[digest] = True
@@ -43,7 +47,10 @@ class BloomFilter(object):
         Verificar existencia de elemento
         '''
         for i in range(self.hash_count):
-            digest = mmh3.hash(item,i) % self.size
+            H = hl.sha1()
+            H.update(bytearray(item,'utf-8'))
+            H.update(bytearray(str(i),'utf-8'))
+            digest = int.from_bytes(H.digest(), 'big') % self.size
             if self.bit_array[digest] == False:
                 # Definitivamente no existe
                 return False
@@ -77,63 +84,25 @@ class BloomFilter(object):
         k = (m/n) * math.log(2)
         return int(k)
 
-def decToBin(num, kbits):
-    """Programa para convertir un número decimal a binario con k-bits de precision de punto flotante"""
-    toBin = ""
-    # Parte entera.
-    Integral = int(num)
-    # Parte fraccional
-    fract = num - Integral
-    # Decimal => binario. Parte entera (Iterativo hasta que Integral sea 0)
-    while (Integral):
-        # Obtener residuo
-        rem = Integral % 2
-        # Añadir numero. Se obtiene el número binario en little endian.
-        toBin += str(rem)
-        # División entera. Corresponde al valor para el siguiente dígito.
-        Integral //= 2
-    # Invertir array para obtener el número el big endian.
-    toBin = toBin[::-1]
 
-    # Punto decimal.
-    toBin += '.'
-
-    # Decimal => binario. Parate fraccionaria (Iterativo)
-    while (kbits):
-        # Determinar bits en fracción. Proceso inverso respecto a la división entera usada.
-        fract *= 2
-        fract_bit = int(fract)
-        if (fract_bit == 1) :
-            fract -= fract_bit
-            toBin += '1'
-        else:
-            toBin += '0'
-        kbits -= 1
-    return toBin
 def main():
-    n = 4.47
-    k = 13
-    print(decToBin(n, k))
-    n = 6.986
-    k = 13
-    print(decToBin(n, k))
     from random import shuffle
 
-    n = 10 #no of items to add
-    p = 0.01 #false positive probability
+    n = 30 #no of items to add
+    p = 1/1040 #false positive probability
 
     bloomf = BloomFilter(n,p)
-    print("Size of bit array:{}".format(bloomf.size))
+    print("Size of bit array:{}".format(bloomf.get_bitarray_size()))
     print(bloomf.get_bit_array())
     print("False positive Probability:{}".format(bloomf.fp_prob))
     print("Number of hash functions:{}".format(bloomf.hash_count))
 
     # words to be added
     word_present = ['hola','adios','perro','gato','cerdo',
-                    'yo','tu']
+                    'yo','tu','aka','bebe','queso']
 
     # word not added
-    word_absent = ['aka','bebe','queso','examen','compu',
+    word_absent = ['examen','compu',
                    'seguridad','hacks']
 
     for item in word_present:

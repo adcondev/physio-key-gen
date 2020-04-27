@@ -3,6 +3,39 @@ import numpy as np
 import os
 import shutil
 import wfdb
+def decToBin(num, kbits):
+    """Programa para convertir un número decimal a binario con k-bits de precision de punto flotante"""
+    toBin = ""
+    # Parte entera.
+    Integral = int(num)
+    # Parte fraccional
+    fract = num - Integral
+    # Decimal => binario. Parte entera (Iterativo hasta que Integral sea 0)
+    while (Integral):
+        # Obtener residuo
+        rem = Integral % 2
+        # Añadir numero. Se obtiene el número binario en little endian.
+        toBin += str(rem)
+        # División entera. Corresponde al valor para el siguiente dígito.
+        Integral //= 2
+    # Invertir array para obtener el número el big endian.
+    toBin = toBin[::-1]
+
+    # Punto decimal.
+    toBin += '.'
+
+    # Decimal => binario. Parate fraccionaria (Iterativo)
+    while (kbits):
+        # Determinar bits en fracción. Proceso inverso respecto a la división entera usada.
+        fract *= 2
+        fract_bit = int(fract)
+        if (fract_bit == 1) :
+            fract -= fract_bit
+            toBin += '1'
+        else:
+            toBin += '0'
+        kbits -= 1
+    return toBin
 def iPulInt(filter, filename, start, step, threshold, toPlot = True):
 	"""Función para determinar el IPI de un segmento de tiempo."""
 	record = wfdb.rdrecord(filename)
@@ -28,6 +61,14 @@ def iPulInt(filter, filename, start, step, threshold, toPlot = True):
 	if toPlot:
 		wfdb.plot_wfdb(record=record, title='Record ' + filename[-3:] + ' from MIT-BIH Arrhythmia DB')
 	return IPI, record
+def main():
+    n = 4.47
+    k = 13
+    print(decToBin(n, k))
+    n = 6.986
+    k = 13
+    print(decToBin(n, k))
+    ipi,record = iPulInt(5, 'physionet2/103', 94, 2.5, 2, True)
+    print("IPI Value:", ipi)
 if __name__ == '__main__':
-	ipi,record = iPulInt(5, 'physionet2/103', 94, 2.5, 2, True)
-	print("IPI Value:", ipi)
+    main()
