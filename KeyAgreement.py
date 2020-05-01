@@ -10,8 +10,8 @@ def fGen(filtRes,filename, start, step, threshold,kbits):
         El sensor R crea el suyo a la par.
         El vector consta de strings donde cada posición representa una concatenación de 3 IPIs
         de segmentos consecutivas. La diferencia entre cada segmento es de una muestra(360 sps)"""
-    F = [iPI.iPulInt(filtRes, filename, start + i*3 - 2, step, threshold, False, kbits)+
-        iPI.iPulInt(filtRes, filename, start + i*3 - 1, step, threshold, False, kbits)+
+    F = [iPI.iPulInt(filtRes, filename, start + i*3 - 2, step, threshold, False, kbits) +
+        iPI.iPulInt(filtRes, filename, start + i*3 - 1, step, threshold, False, kbits) +
         iPI.iPulInt(filtRes,filename, start + i*3, step, threshold, False, kbits) for i in range(1,featCount + 1)]
     return F
 def bfCrea(features,n,p):

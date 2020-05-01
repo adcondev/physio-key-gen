@@ -122,5 +122,4 @@ def main():
         else:
             print("'{}'  definitivamente no está presente".format(word))
 if __name__ == "__main__" :
-    x = BloomFilter()
     main()
