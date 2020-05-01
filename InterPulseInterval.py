@@ -59,7 +59,8 @@ def iPulInt(filter, filename, start, step, threshold, toPlot = False, kbits = 13
     IPI = np.average(peaks_DxDt[peaks_DxDt > 1/fs])
     # Gráficas
     if toPlot:
-    	wfdb.plot_wfdb(record=record, title='Record ' + filename[-3:] + ' from MIT-BIH Arrhythmia DB')
+        wfdb.plot_wfdb(record=record, title='Record ' + filename[-3:] + ' from MIT-BIH Arrhythmia DB')
+        print("Datos de señal:", record.__dict__)
     return decToBin(IPI, kbits)
 def main():
     n = 4.47

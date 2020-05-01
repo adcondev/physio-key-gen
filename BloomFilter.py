@@ -3,7 +3,7 @@ import hashlib as hl
 from bitarray import bitarray
 
 class BloomFilter(object):
-    '''Bloom Filter usando murmur3 hash'''
+    '''Bloom Filter usando SHA-1'''
     def __init__(self, items_count,fp_prob):
         '''
         items_count : int
@@ -92,10 +92,10 @@ def main():
     p = 1/1040 #false positive probability
 
     bloomf = BloomFilter(n,p)
-    print("Size of bit array:{}".format(bloomf.get_bitarray_size()))
+    print("Longitud de array de bits:{}".format(bloomf.get_bitarray_size()))
     print(bloomf.get_bit_array())
-    print("False positive Probability:{}".format(bloomf.fp_prob))
-    print("Number of hash functions:{}".format(bloomf.hash_count))
+    print("Probabilidad de Falsos Positivos:{}".format(bloomf.fp_prob))
+    print("Número de funciones Hash:{}".format(bloomf.hash_count))
 
     # words to be added
     word_present = ['hola','adios','perro','gato','cerdo',
@@ -116,10 +116,11 @@ def main():
     for word in test_words:
         if bloomf.check(word):
             if word in word_absent:
-                print("'{}'  false positive".format(word))
+                print("'{}'  falso positivo".format(word))
             else:
-                print("'{}'  probably present".format(word))
+                print("'{}'  probablemente presente".format(word))
         else:
-            print("'{}'  definitely not present".format(word))
+            print("'{}'  definitivamente no está presente".format(word))
 if __name__ == "__main__" :
+    x = BloomFilter()
     main()
