@@ -3,7 +3,7 @@ import hashlib as hl
 import hmac
 import InterPulseInterval as iPI
 import numpy as np
-from random import randint
+from random import randint, shuffle
 
 def fGen(filtRes,filename, start, step, threshold,kbits):
     """Creación de vector de patrones biométricos (Inter Pulse Interval<<IPI>> de ECG) en sensor S.
@@ -85,8 +85,11 @@ def KeyGenS(msg,secThrshld, fS, No):
         print("Sin coincidencia en patrones...")
         return None, None
 def AgreeWithR(Cs, Kr, Ran):
-    Cr = hmac.new(bytearray(Kr,"utf-8"), bytearray(IDs + IDr + Ran,"utf-8"), hl.sha1)
-    return True if hmac.compare_digest(Cs.hexdigest(),Cr.hexdigest()) else False
+    try:
+        Cr = hmac.new(bytearray(Kr,"utf-8"), bytearray(IDs + IDr + Ran,"utf-8"), hl.sha1)
+        return True if hmac.compare_digest(Cs.hexdigest(),Cr.hexdigest()) else False
+    except:
+        print("C no coincide, fallo en protocolo.")
 def main():
     ####    ###################     ####
     ####    GENERACIÓN DE FEATURES  ####
@@ -125,12 +128,14 @@ def main():
     # Para S y R
     secureThrshld = 8
     # Generación de Kr
+    #RanInt = "TAMPERED"
     mac1, Key_R = KeyGenR(secureThrshld, indicesEnComun, fR, RanInt)
+    #shuffle(indicesEnComun)
     msgToS = SendMsgToS(IDr, mac1, indicesEnComun)
     # Generación de Ks
     FinalDigest, Key_S = KeyGenS(msgToS, secureThrshld, fS, Ran)
     # Validación final en R
-    if AgreeWithR(FinalDigest,Key_R, RanInt):
+    if AgreeWithR(FinalDigest,Key_R, Ran):
         print("Correcto acuerdo de llaves...")
     else:
         print("Fallo en la verificación de llaves.")
