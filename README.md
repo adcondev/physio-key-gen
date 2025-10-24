@@ -2,7 +2,6 @@
 
 [![Language](https://img.shields.io/badge/Language-Python-blue.svg)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen.svg)](PLACEHOLDER_URL)
 
 ![Project Logo](PLACEHOLDER_URL)
 
