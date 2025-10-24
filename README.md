@@ -3,7 +3,6 @@
 [![Language](https://img.shields.io/badge/Language-Python-blue.svg)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-![Project Logo](PLACEHOLDER_URL)
 
 ## Overview
 
