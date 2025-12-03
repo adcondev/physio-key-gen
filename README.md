@@ -1,60 +1,100 @@
-# Physio Key Gen 🔐
+# Physio-Key-Gen: ECG-Based Key Agreement Protocol
 
-[![Language](https://img.shields.io/badge/Language-Python-blue.svg)](https://www.python.org/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+![Project Banner](https://via.placeholder.com/800x200?text=Physio-Key-Gen+Banner)
 
+![Python](https://img.shields.io/badge/Python-3.x-blue.svg)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
+![Status](https://img.shields.io/badge/Status-Prototype-orange.svg)
 
-## Overview
+## Project Description
 
-This project implements a cryptographic key generation system that uses physiological signals (ECG) combined with Bloom filters to create secure, reproducible keys for Wireless Body Area Networks (WBANs). This is based on the research paper "Using Bloom Filter to Generate a Physiological Signal-Based Key for Wireless Body Area Networks".
+**Physio-Key-Gen** is a Proof-of-Concept (PoC) implementation of a secure key agreement protocol for Wireless Body Area Networks (WBAN). It utilizes the **Inter-Pulse Interval (IPI)** derived from **Electrocardiogram (ECG)** signals as a shared source of randomness to generate cryptographic keys between two sensors.
 
-## Architecture Diagram
+The system employs **Bloom Filters** to efficiently reconcile the set of biometric features (IPIs) between a sender (Sensor S) and a receiver (Sensor R) without exposing the raw biometric data, ensuring both security and privacy.
+
+## Architecture
+
+The following diagram illustrates the key agreement flow between Sensor S and Sensor R:
 
 ```mermaid
-graph TD;
-    A[ECG Signal] --> B{Signal Processing};
-    B --> C[Feature Extraction - IPI];
-    C --> D{Bloom Filter};
-    D --> E[Key Generation];
-    E --> F((Cryptographic Key));
+sequenceDiagram
+    participant S as Sensor S (Sender)
+    participant R as Sensor R (Receiver)
+    
+    Note over S,R: Both sensors capture ECG from the same host
+    
+    S->>S: Generate IPI Features (Fs)
+    R->>R: Generate IPI Features (Fr)
+    
+    S->>S: Create Bloom Filter (BF) from Fs
+    S->>R: Send (ID_S, BF, Random_Nonce)
+    
+    R->>R: Check Fr against BF
+    R->>R: Identify Common Features
+    R->>R: Generate Key (Kr) = SHA1(Common Features)
+    R->>R: Generate HMAC1 = HMAC(Kr, Common Features + Nonce)
+    
+    R->>S: Send (ID_R, HMAC1, Indices_Common)
+    
+    S->>S: Reconstruct Common Features from Indices
+    S->>S: Generate Key (Ks) = SHA1(Common Features)
+    S->>S: Verify HMAC1 using Ks
+    
+    alt HMAC Verified
+        S->>S: Key Agreement Successful (Ks == Kr)
+        S->>R: Send Confirmation HMAC
+    else HMAC Failed
+        S->>S: Abort Protocol
+    end
 ```
 
-## How It Works
+## Features
 
-1.  **Signal Preprocessing**: The system reads ECG data from the PhysioNet database.
-2.  **Feature Extraction**: It calculates the Inter-Pulse Interval (IPI) from the ECG signal to use as a biometric feature.
-3.  **Bloom Filter**: The extracted features are added to a Bloom filter, a probabilistic data structure that efficiently represents the set of features.
-4.  **Key Agreement**: Two devices, each with their own set of ECG features, exchange their Bloom filters to find common features.
-5.  **Key Derivation**: A shared cryptographic key is generated based on the common features, using HMACs for secure key agreement.
+*   **Biometric Feature Extraction**: Extracts Inter-Pulse Intervals (IPI) from raw ECG data using `wfdb`.
+*   **Bloom Filter Implementation**: Custom Python implementation of a Bloom Filter for efficient set membership testing.
+*   **Secure Key Generation**: Uses SHA-1 hashing and HMAC for secure key derivation and verification.
+*   **Simulation**: Simulates the interaction between two sensors using the MIT-BIH Arrhythmia Database.
 
 ## Installation
 
-To run this project, you need to have Python installed, along with the following libraries:
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/yourusername/physio-key-gen.git
+    cd physio-key-gen
+    ```
 
-```bash
-pip install numpy matplotlib wfdb bitarray
-```
+2.  Install the required dependencies:
+    ```bash
+    pip install numpy matplotlib wfdb bitarray
+    ```
+
+    *Note: You may need to download the MIT-BIH Arrhythmia Database files if they are not included or use the `wfdb` library to fetch them.*
 
 ## Usage
 
-To run the main key agreement protocol, execute the following command:
+To run the key agreement simulation:
 
 ```bash
 python KeyAgreement.py
 ```
 
-This will simulate the key generation and agreement process between two devices, printing the results to the console.
+This script will:
+1.  Load an ECG record.
+2.  Generate features for Sensor S and Sensor R (with a simulated offset/noise).
+3.  Execute the key agreement protocol.
+4.  Print the status of the key generation and verification steps to the console.
+
+## Files Structure
+
+*   `KeyAgreement.py`: Main entry point. Orchestrates the protocol between S and R.
+*   `BloomFilter.py`: Class implementation of the Bloom Filter data structure.
+*   `InterPulseInterval.py`: Helper functions for ECG signal processing and IPI calculation.
+*   `LICENSE`: MIT License file.
 
 ## Contributing
 
-Contributions are welcome! If you have any suggestions or improvements, please feel free to open an issue or submit a pull request.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## Research Papers
-
-*   Goldberger AL, Amaral LAN, Glass L, Hausdorff JM, Ivanov PCh, Mark RG, Mietus JE, Moody GB, Peng C-K, Stanley HE. PhysioBank, PhysioToolkit, and PhysioNet: Components of a New Research Resource for Complex Physiologic Signals (2003). Circulation. 101(23):e215-e220.
-*   Moody GB, Mark RG. The impact of the MIT-BIH Arrhythmia Database. IEEE Eng in Med and Biol 20(3):45-50 (May-June 2001). (PMID: 11446209).
-*   Using Bloom Filter to Generate a Physiological Signal-Based Key for Wireless Body Area Networks (Yao et al, 2019).
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

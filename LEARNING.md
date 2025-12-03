@@ -1,38 +1,29 @@
-# LEARNING.md - Technical Project Summary for CV
+# Learning & Achievements Log
 
 ## Project Overview
-
-This project implements a novel cryptographic key generation system using physiological signals, specifically Electrocardiography (ECG), as a biometric identifier. The core objective is to create a secure and reproducible cryptographic key for authentication in Wireless Body Area Networks (WBANs). The system leverages a Bloom filter, a probabilistic data structure, to achieve this. The implementation is based on the research paper "Using Bloom Filter to Generate a Physiological Signal-Based Key for Wireless Body Area Networks."
+**Physio-Key-Gen** is a cryptographic security project that implements a **Key Agreement Protocol** for Wireless Body Area Networks (WBAN). It uses **Electrocardiogram (ECG)** signals—specifically the **Inter-Pulse Interval (IPI)**—as a biometric source to generate shared cryptographic keys between two sensors without transmitting the raw biometric data. The system leverages **Bloom Filters** for efficient and secure set reconciliation to find common features between two sensors observing the same physiological signal.
 
 ## Tech Stack and Key Technologies
-
-*   **Programming Language:** Python
-*   **Data Structures:** Bloom Filter
-*   **Cryptography:** Hashing (SHA-1), HMAC
-*   **Signal Processing:** ECG signal analysis (Inter-Pulse Interval calculation)
+*   **Language:** Python 3
+*   **Scientific Computing:** NumPy, Matplotlib
+*   **Biomedical Signal Processing:** WFDB (Waveform Database)
+*   **Cryptography:** `hashlib` (SHA-1), `hmac`
+*   **Data Structures:** `bitarray`
 
 ## Notable Libraries
-
-*   **hashlib:** Used for cryptographic hashing, specifically SHA-1, to generate digests for the Bloom filter and for key generation.
-*   **hmac:** Used for creating Hash-based Message Authentication Codes (HMACs) to ensure the integrity and authenticity of messages exchanged during the key agreement protocol.
-*   **bitarray:** Provides an efficient way to handle bit arrays, which is the core data structure for the Bloom filter.
-*   **matplotlib:** Used for plotting ECG signals, which is crucial for visualizing and debugging the signal processing part of the project.
-*   **numpy:** Utilized for numerical operations, particularly in signal processing for handling arrays and performing calculations like cross-correlation and averaging.
-*   **wfdb:** The Waveform Database (WFDB) package is used to read and process physiological signals from databases like PhysioNet, which is essential for working with real-world ECG data.
+*   **`wfdb`**: Used to read and process standard ECG records from the MIT-BIH Arrhythmia Database. It was crucial for simulating real-world sensor data.
+*   **`bitarray`**: Essential for the efficient implementation of the Bloom Filter, allowing for bit-level manipulation to store biometric feature hashes.
+*   **`hashlib` & `hmac`**: Used to implement the security primitives (SHA-1 for hashing features and HMAC for message authentication and integrity verification).
 
 ## Major Achievements and Skills Demonstrated
-
-*   **Designed and implemented a biometric-based cryptographic key generation system.** This demonstrates the ability to translate a research paper into a functional implementation.
-*   **Implemented a Bloom filter from scratch.** This showcases a strong understanding of probabilistic data structures and their applications in security.
-*   **Developed a key agreement protocol using HMACs.** This highlights experience in designing and implementing secure communication protocols.
-*   **Performed ECG signal processing to extract biometric features.** This involved reading and analyzing physiological signals to extract the Inter-Pulse Interval (IPI) as a unique identifier.
-*   **Integrated multiple libraries to create a cohesive system.** This demonstrates the ability to work with various tools and technologies to achieve a complex goal.
+*   **Biometric Key Generation**: Designed and implemented a protocol to generate stable cryptographic keys from noisy physiological data (ECG IPIs).
+*   **Probabilistic Data Structures**: Implemented a **Bloom Filter** from scratch to efficiently exchange biometric feature sets with tunable false positive probabilities.
+*   **Signal Processing Pipeline**: Built a pipeline to filter raw ECG signals, detect QRS complexes, and calculate Inter-Pulse Intervals (IPI) with floating-point precision.
+*   **Secure Protocol Design**: Implemented a challenge-response style protocol using **HMAC** to verify that both parties established the same key without revealing the key itself.
+*   **Simulation of WBAN**: Simulated a two-node network (Sensor S and Sensor R) to demonstrate the feasibility of the key agreement scheme.
 
 ## Skills Gained/Reinforced
-
-*   **Biometric Cryptography:** Deepened understanding of using physiological signals for security applications.
-*   **API Design:** While not a traditional API, the modular structure of the code demonstrates an understanding of how to design and interconnect different components.
-*   **Data Structures and Algorithms:** Practical application of Bloom filters and other data structures.
-*   **Cryptographic Protocols:** Hands-on experience with key agreement protocols and HMACs.
-*   **Signal Processing:** Gained practical experience in processing and analyzing biomedical signals.
-*   **Python Programming:** Advanced my Python skills by implementing a complex, multi-faceted project.
+*   **Cryptography & Network Security**: Applied knowledge of key agreement, hashing, and message authentication codes.
+*   **Biometrics**: Understanding of physiological signals (ECG) and their application in security (Cancelable Biometrics).
+*   **Algorithm Implementation**: Practical experience with Bloom Filters and set intersection algorithms.
+*   **Python Data Science Stack**: Proficiency with NumPy for vectorization and Matplotlib for signal visualization.
